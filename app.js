@@ -87,7 +87,7 @@ const secret =
   "qsdjS12ozehdoIJ123DJOZJLDSCqsdeffdg123ER56SDFZedhWXojqshduzaohduihqsDAqsdq";
 
 app.get("/login", (req, res) => {
-  res.render("login", { title: "CONNEXION" });
+  res.render("login", { title: "Espace Membre" });
 });
 
 app.post("/login", urlencoded, (req, res) => {
