@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Express Movies</title>
+    <link rel="stylesheet" href="../public/style.css" />
+</head>
+
+<body>
+    <div class="central">
+        <% include ./partials/header %>
+
+        <h1>
+            <%= title %>
+        </h1>
+
+        <div class="moviz">
+            <% movies.map((movie) =>{%>
+            <div>
+                <%= movie.title %>:
+                <%= movie.year %>
+            </div>
+            <% })%>
+        </div>
+        <br>
+        <div>
+            <form action="/movies" method="POST">
+                <label for="movieTitle">Titre du film</label>
+                <input type="text" name="movieTitle" id="movieTitle" />
+                <label for="movieYear">Année du film</label>
+                <input type="text" name="movieYear" id="movieYear" />
+                <button type="submit">Ajouter</button>
+            </form>
+
+        </div>
+
+
+
+    </div>
+    <% include ./partials/footer %>
+</body>
+
+<script>
+    const form = document.querySelector('form');
+    form.addEventListener('submit', addMovie)
+
+    function addMovie(event) {
+        event.preventDefault();
+
+
+        if (fetch) {
+
+            fetch('/movies', {
+                method: 'POST',
+                body: new FormData(form)
+            })
+                .then(checkStatus)
+                .catch((error) => { console.error('request failed', error) });
+        }
+        else {
+            console.log('else');
+            //jquery
+        }
+    }
+    function checkStatus(response) {
+        console.log(response.status);
+        if (response.status >= 200 && response.status < 300) {
+            console.log('checkstatus')
+            let newMovieDiv = document.createElement('div');
+
+            const movietitle = document.getElementById('movieTitle').value;
+
+            const movieyear = document.getElementById('movieYear').value;
+
+            newMovieDiv.innerHTML = `${movietitle} : ${movieyear}`;
+            document.querySelector('.moviz').appendChild(newMovieDiv);
+            form.reset();
+        }
+        else {
+            console.log('erreur mon pote', response);
+        }
+
+    }
+
+</script>
+
+</html>
