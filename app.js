@@ -4,8 +4,22 @@ const bodyParser = require("body-parser");
 
 const multer = require("multer");
 const upload = multer();
+//jwt
 const jwt = require("jsonwebtoken");
 const expressJwt = require("express-jwt"); //pour gerer les tokens
+//mongoose
+var mongoose = require("mongoose");
+mongoose.connect(
+  "mongodb://<Sam>:<samsam69>@ds131743.mlab.com:31743/expressmovies"
+);
+const db = mongoose.connection;
+db.on(
+  "error",
+  console.error.bind(console, "connection error: cannot connect to my DB")
+);
+db.once("open", () => {
+  console.log("connected to the DB");
+});
 
 const axios = require("axios");
 const port = 3000;
@@ -130,3 +144,7 @@ app.get("/member-only", (req, res) => {
 app.listen(port, () => {
   console.log(`listen on the port ${port}`);
 });
+
+// mlab user
+//Sam
+// samsam69
