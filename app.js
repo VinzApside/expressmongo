@@ -5,9 +5,13 @@ const bodyParser = require("body-parser");
 const multer = require("multer");
 const upload = multer();
 const jwt = require("jsonwebtoken");
+const expressJwt = require("express-jwt"); //pour gerer les tokens
 
+const axios = require("axios");
 const port = 3000;
 let frenchMovies = [];
+const secret =
+  "qsdjS12ozehdoIJ123DJOZJLDSCqsdeffdg123ER56SDFZedhWXojqshduzaohduihqsDAqsdq";
 
 //on déclare où sont nos views
 app.set("views", "./views");
@@ -17,6 +21,12 @@ app.set("view engine", "ejs");
 
 //middleware pour utiliser des fichiers statiques dans le dossier public
 app.use("/public", express.static("public"));
+
+app.use(
+  expressJwt({ secret: secret }).unless({
+    path: ["/login", "/", "/movies", "/movie-search"]
+  })
+); //unless permet de définir une page ne nécessitant pas le jwt
 
 // // parse application/x-www-form-urlencoded
 // app.use(bodyParser.urlencoded({ extended: false }));
@@ -83,8 +93,6 @@ const fakeuser = {
   email: "cc",
   password: "cc"
 };
-const secret =
-  "qsdjS12ozehdoIJ123DJOZJLDSCqsdeffdg123ER56SDFZedhWXojqshduzaohduihqsDAqsdq";
 
 app.get("/login", (req, res) => {
   res.render("login", { title: "Espace Membre" });
@@ -112,6 +120,11 @@ app.post("/login", urlencoded, (req, res) => {
     }
   }
   console.log("login post", req.body);
+});
+
+app.get("/member-only", (req, res) => {
+  console.log("req.user", req.user);
+  res.send(req.user);
 });
 
 app.listen(port, () => {

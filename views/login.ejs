@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Express Movies</title>
+    <link rel="stylesheet" href="../public/style.css" />
+    <link rel="icon" href="data:;base64,=">
+</head>
+
 
 <body>
     <% include ./partials/header %>
@@ -37,6 +46,7 @@
     <footer>
         <% include ./partials/footer %>
     </footer>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
         var form = document.querySelector('form');
         form.addEventListener("submit", loginUser);
@@ -44,10 +54,15 @@
         let loginArea = document.querySelector('#login');
         let profileArea = document.querySelector('#profile');
 
-        let disconnectBtn = document.querySelector('#disconnectBtn')
+        let displayPayloadBtn = document.querySelector('#display-payload');
+        displayPayloadBtn.addEventListener('click', displayPayload)
+        let disconnectBtn = document.querySelector('#disconnectBtn');
         disconnectBtn.addEventListener('click', disconnect);
-        var connexionLinkArea = document.querySelector('#connectionLink');
+        const connexionLinkArea = document.querySelector('#connectionLink');
         handleFormDisplay();
+
+        const memberOnlyLink = document.querySelector('#member-only');
+        memberOnlyLink.addEventListener('click', makeRequestWithToken);
 
         function loginUser(event) {
             loginUserWithXHR(event)
@@ -99,11 +114,44 @@
             loginArea.style.display = 'block';
             profileArea.style.display = 'none'
         }
+        function displayPayload() {
+            const payload = parseJWT();
+            var decodedPayloadDiv = document.querySelector('#decoded-payload');
+            decodedPayloadDiv.innerHTML = `<pre>${JSON.stringify(payload)}</pre>`
+        }
+
+        function parseJWT() {
+            let tokenFromStorage = localStorage.getItem('token')
+            if (tokenFromStorage) {
+                const base64Payload = tokenFromStorage.split('.')[1];
+                return JSON.parse(window.atob(base64Payload));
+            }
+            else {
+                return 'not token to parse';
+            }
+        }
+
 
         function disconnect() {
             switchToLoggedOutMode;
             localStorage.removeItem('token');
             connexionLinkArea.innerHTML = '<a href="/login">connexion</a>';
+        }
+
+        function makeRequestWithToken(event) {
+            event.preventDefault();
+            const page = this.id;
+            let tokenFromStorage = localStorage.getItem('token');
+            const config = {};
+
+            if (tokenFromStorage) {
+                config.headers = { 'Authorization': `Bearer ${JSON.parse(tokenFromStorage)}` }
+            }
+
+            axios.get(`http://localhost:3000/${page}`, config).then(res => {
+                console.log('success');
+                console.log(res);
+            }).catch(err => { console.error('makeRequestWithToken err', err) })
         }
 
     </script>
