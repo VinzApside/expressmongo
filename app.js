@@ -8,9 +8,11 @@ const upload = multer();
 const jwt = require("jsonwebtoken");
 const expressJwt = require("express-jwt"); //pour gerer les tokens
 //mongoose
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
+const options = { useNewUrlParser: true };
 mongoose.connect(
-  "mongodb://<Sam>:<samsam69>@ds131743.mlab.com:31743/expressmovies"
+  "mongodb://Sam:samsam69@ds131743.mlab.com:31743/expressmovies",
+  options
 );
 const db = mongoose.connection;
 db.on(
