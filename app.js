@@ -79,12 +79,24 @@ app.get("/movies", (req, res) => {
   // res.send("bientôt une liste de film ici !");
   const title = `Films américains`;
 
-  frenchMovies = [
-    { title: `Tron`, year: 1978 },
-    { title: "Terminator", year: 1983 },
-    { title: `2001 odysée de l'espace`, year: 1968 }
-  ];
-  res.render("movies", { movies: frenchMovies, title: title });
+  // frenchMovies = [
+  //   { title: `Tron`, year: 1978 },
+  //   { title: "Terminator", year: 1983 },
+  //   { title: `2001 odysée de l'espace`, year: 1968 }
+  // ];
+
+  //on recupere les datas de mongoose
+  frenchMovies = [];
+  Movie.find((err, movies) => {
+    if (err) {
+      console.error("could not retrieve movies from DB");
+      res.sendStatus(500);
+    } else {
+      frenchMovies = movies;
+      res.render("movies", { movies: frenchMovies, title: title });
+    }
+  });
+  // res.render("movies", { movies: frenchMovies, title: title });
 });
 
 // s'applique uniquement à /movies
