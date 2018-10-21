@@ -41,14 +41,14 @@ const year = Math.floor(Math.random() * 70) + 1948;
 
 //creation d'un instance de Movie
 const myMovie = new Movie({ movieTitle: title, movieYear: year });
-//creer automatiquement la collection dans mlab
-myMovie.save((err, savedMovie) => {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log("savedMovie", savedMovie);
-  }
-});
+// //creer automatiquement la collection dans mlab
+// myMovie.save((err, savedMovie) => {
+//   if (err) {
+//     console.error(err);
+//   } else {
+//     console.log("savedMovie", savedMovie);
+//   }
+// });
 
 const axios = require("axios");
 const port = 3000;
@@ -107,9 +107,22 @@ app.post("/movies", upload.fields([]), (req, res) => {
   } else {
     const formData = req.body;
     console.log("formdata", formData);
-    const newMovie = { title: req.body.movieTitle, year: req.body.movieYear };
-    frenchMovies = [...frenchMovies, newMovie];
-    res.sendStatus(201);
+    // const newMovie = { title: req.body.movieTitle, year: req.body.movieYear };
+    // frenchMovies = [...frenchMovies, newMovie];
+    // res.sendStatus(201);
+
+    const title = req.body.movieTitle;
+    const year = req.body.movieYear;
+    const myMovie = new Movie({ movieTitle: title, movieYear: year });
+    myMovie.save((err, savedMovie) => {
+      if (err) {
+        console.error(err);
+        return;
+      } else {
+        console.log(savedMovie);
+        res.sendStatus(201);
+      }
+    });
   }
 });
 
