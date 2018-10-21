@@ -23,6 +23,20 @@ db.once("open", () => {
   console.log("connected to the DB");
 });
 
+//creation d'un schema pour mongoose
+const movieSchema = mongoose.Schema({
+  movietitle: String,
+  movieYear: Number
+});
+
+//creation d'un modele Movie car la collection mongo est Movies
+const Movie = mongoose.model("Movie", movieSchema);
+
+const title = "Terminator";
+const year = 1984;
+//creation d'un instance de Movie
+const myMovie = new Movie({movieTitle: title, movieYear: year });
+
 const axios = require("axios");
 const port = 3000;
 let frenchMovies = [];
