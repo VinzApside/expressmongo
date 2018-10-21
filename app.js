@@ -7,6 +7,10 @@ const upload = multer();
 //jwt
 const jwt = require("jsonwebtoken");
 const expressJwt = require("express-jwt"); //pour gerer les tokens
+
+//faker pour générer données
+const faker = require("faker");
+
 //mongoose
 const mongoose = require("mongoose");
 const options = { useNewUrlParser: true };
@@ -25,17 +29,26 @@ db.once("open", () => {
 
 //creation d'un schema pour mongoose
 const movieSchema = mongoose.Schema({
-  movietitle: String,
+  movieTitle: String,
   movieYear: Number
 });
 
 //creation d'un modele Movie car la collection mongo est Movies
 const Movie = mongoose.model("Movie", movieSchema);
+//genérer de fausse information
+const title = faker.lorem.sentence(Math.floor(Math.random() * 5) + 1);
+const year = Math.floor(Math.random() * 70) + 1948;
 
-const title = "Terminator";
-const year = 1984;
 //creation d'un instance de Movie
-const myMovie = new Movie({movieTitle: title, movieYear: year });
+const myMovie = new Movie({ movieTitle: title, movieYear: year });
+//creer automatiquement la collection dans mlab
+myMovie.save((err, savedMovie) => {
+  if (err) {
+    console.error(err);
+  } else {
+    console.log("savedMovie", savedMovie);
+  }
+});
 
 const axios = require("axios");
 const port = 3000;
