@@ -11,11 +11,16 @@ const expressJwt = require("express-jwt"); //pour gerer les tokens
 //faker pour générer données
 const faker = require("faker");
 
+//les données pour s'identifier sur mongoose
+const config = require("./config");
+
 //mongoose
 const mongoose = require("mongoose");
 const options = { useNewUrlParser: true };
 mongoose.connect(
-  "mongodb://Sam:samsam69@ds131743.mlab.com:31743/expressmovies",
+  `mongodb://${config.db.user}:${
+    config.db.pwd
+  }@ds131743.mlab.com:31743/expressmovies`,
   options
 );
 const db = mongoose.connection;
@@ -67,7 +72,13 @@ app.use("/public", express.static("public"));
 
 app.use(
   expressJwt({ secret: secret }).unless({
-    path: ["/login", "/", "/movies", "/movie-search"]
+    path: [
+      "/",
+      "/login",
+      "/movies",
+      "/movie-search",
+      new RegExp("/movies.*/", "i")
+    ]
   })
 ); //unless permet de définir une page ne nécessitant pas le jwt
 
@@ -147,6 +158,36 @@ app.get("/movies/:id/:title", (req, res) => {
   const title = req.params.title;
   // res.send(`vous regardez le film numéro ${id}`);
   res.render("movie-details", { moviesid: id, movietitle: title });
+});
+
+app.put("/movies/:id", urlencoded, (req, res) => {
+  const id = req.params.id;
+  if (!req.body) {
+    return res.sendStatus(500);
+  } else {
+    console.log("req body", req.body);
+    console.log("moviesTitle", req.body.movieTitle, req.body.movieYear);
+    Movie.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          movieTitle: req.body.movieTitle,
+          moviesYear: req.body.movieYear
+        }
+      },
+      { new: true },
+      (err, movie) => {
+        if (err) {
+          console.log(err);
+          return res.send(`le film n'a pas pu être mis à jour`);
+        } else {
+          return res.sendStatus(200);
+        }
+      }
+    );
+  }
+  // // pour vérifier avec postman ce que nous recevons
+  // res.send(`PUT request to make of id ${id}`);
 });
 
 app.get("/", (req, res) => {
