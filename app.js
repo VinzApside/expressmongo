@@ -77,7 +77,8 @@ app.use(
       "/login",
       "/movies",
       "/movie-search",
-      new RegExp("/movies.*/", "i")
+      // new RegExp("/movies.*/", "i"),
+      new RegExp("/movie-details.*/", "i")
     ]
   })
 ); //unless permet de définir une page ne nécessitant pas le jwt
@@ -160,7 +161,17 @@ app.get("/movies/:id/:title", (req, res) => {
   res.render("movie-details", { moviesid: id, movietitle: title });
 });
 
-app.put("/movies/:id", urlencoded, (req, res) => {
+app.get("/movie-details/:id", (req, res) => {
+  const id = req.params.id;
+  Movie.findById(id, (err, movie) => {
+    res.render("movie-details", {
+      moviesid: movie.__id,
+      moviestitle: movie.movieTitle
+    });
+  });
+});
+
+app.put("/movies-details/:id", urlencoded, (req, res) => {
   const id = req.params.id;
   if (!req.body) {
     return res.sendStatus(500);
@@ -180,9 +191,8 @@ app.put("/movies/:id", urlencoded, (req, res) => {
         if (err) {
           console.log(err);
           return res.send(`le film n'a pas pu être mis à jour`);
-        } else {
-          return res.sendStatus(200);
         }
+        res.redirect("/movies");
       }
     );
   }
