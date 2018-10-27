@@ -77,7 +77,7 @@ app.use(
       "/login",
       "/movies",
       "/movie-search",
-      // new RegExp("/movies.*/", "i"),
+      new RegExp("/movies.*/", "i"),
       new RegExp("/movie-details.*/", "i")
     ]
   })
@@ -164,14 +164,17 @@ app.get("/movies/:id/:title", (req, res) => {
 app.get("/movie-details/:id", (req, res) => {
   const id = req.params.id;
   Movie.findById(id, (err, movie) => {
-    res.render("movie-details", {
-      moviesid: movie.__id,
-      moviestitle: movie.movieTitle
-    });
+    console.log("movie", movie);
+    // res.render("movie-details", {
+    //   moviesid: movie._id,
+    //   moviestitle: movie.movieTitle
+    // });
+    res.render("movie-details", { movie: movie });
   });
 });
 
-app.put("/movies-details/:id", urlencoded, (req, res) => {
+app.post("/movies-details/:id", urlencoded, (req, res) => {
+  console.log("req.body", req.body);
   const id = req.params.id;
   if (!req.body) {
     return res.sendStatus(500);

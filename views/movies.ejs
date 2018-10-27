@@ -22,8 +22,10 @@
             <div>
                 <!-- <%= movie.title %>:
                 <%= movie.year %> -->
-                <%= movie.movieTitle %>:
-                <%= movie.movieYear %>
+                <a href="/movie-details/<%=movie._id%>">
+                    <%= movie.movieTitle %>:
+                    <%= movie.movieYear %>
+                </a>
             </div>
             <% })%>
         </div>
