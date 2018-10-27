@@ -154,6 +154,13 @@ app.get("/movies/add", (req, res) => {
   res.send("route add");
 });
 
+app.delete("/movie-details/:id", (req, res) => {
+  const id = req.params.id;
+  Movie.findOneAndRemove(id, (err, movie) => {
+    res.sendStatus(202);
+  });
+});
+
 app.get("/movies/:id/:title", (req, res) => {
   const id = req.params.id;
   const title = req.params.title;

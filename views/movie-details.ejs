@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Express Movies</title>
     <link rel="stylesheet" href="../public/style.css" />
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 
 <body>
@@ -26,12 +27,27 @@
                 <label for="movieYear">Année du film</label>
                 <input type="text" name="movieYear" id="movieYear" value="<%= movie.movieYear %>">
                 <button type="submit">OK</button>
+                <button id="btnSuppr">Supprimer ce film</button>
             </form>
         </div>
 
 
     </div>
     <% include ./partials/footer %>
+    <script>
+        const btnSuppr = document.getElementById("btnSuppr");
+        btnSuppr.addEventListener('click', deleteDocument);
+
+        function deleteDocument() {
+            const movieId = <% - JSON.stringify(movie._id) %>;
+            const url = `/movie-details/movieId`
+            axios.delete(url).then(function (response) {
+                window.location = '/movies'
+            }).catch(function (error) {
+                console.error(error)
+            })
+        }
+    </script>
 </body>
 
 </html>
